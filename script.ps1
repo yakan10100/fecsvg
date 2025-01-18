@@ -1,43 +1,45 @@
 Add-Type -AssemblyName System.Windows.Forms
 
-#ŒŸõŠJnƒpƒX‚Ìw’è
+#æ¤œç´¢é–‹å§‹ãƒ‘ã‚¹ã®æŒ‡å®š
 while ($true) {
-    $filePath = Read-Host "ŠJnƒpƒX‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢(—á D:\)"
+    $filePath = Read-Host "é–‹å§‹ãƒ‘ã‚¹ã‚’æŒ‡å®šã—ã¦ãã ã•ã„(ä¾‹ D:\)"
     if((Test-Path -Path $filePath)){
         break
     }
-    Write-Output "ƒpƒX‚ªŠÔˆá‚Á‚Ä‚¢‚Ü‚·"
+    Write-Output "ãƒ‘ã‚¹ãŒé–“é•ã£ã¦ã„ã¾ã™"
 }
 
-#Šg’£q‚Ìw’è
-$fileExtension = Read-Host "Šg’£q‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢(—á .png .json)"
+#æ‹¡å¼µå­ã®æŒ‡å®š
+$fileExtension = Read-Host "æ‹¡å¼µå­ã‚’æŒ‡å®šã—ã¦ãã ã•ã„(ä¾‹ .png .json)"
 $fileExtension = $fileExtension -replace "\.",""
 
-#ƒ_ƒCƒAƒƒO‚Ìİ’è
+#ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®è¨­å®š
 $saveFileDialog = New-Object System.Windows.Forms.SaveFileDialog
 $saveFileDialog.Filter = "CSV Files (*.csv)|*.csv"
-$saveFileDialog.Title = "CSV‚ğ•Û‘¶‚·‚éêŠ‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢"
+$saveFileDialog.Title = "CSVã‚’ä¿å­˜ã™ã‚‹å ´æ‰€ã‚’é¸æŠã—ã¦ãã ã•ã„"
 $saveFileDialog.DefaultExt = "csv"
-$saveFileDialog.FileName = $fileExtension+"o—Í"
-$saveFileDialog.InitialDirectory = [Environment]::GetFolderPath('Desktop') # ƒfƒXƒNƒgƒbƒv‚ğ‰ŠúƒtƒHƒ‹ƒ_‚Éİ’è
+$saveFileDialog.FileName = $fileExtension+"å‡ºåŠ›"
+$saveFileDialog.InitialDirectory = [Environment]::GetFolderPath('Desktop') # ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—ã‚’åˆæœŸãƒ•ã‚©ãƒ«ãƒ€ã«è¨­å®š
 
-#ShowDialog‚Ì–ß‚è’l‚ªOK‚¾‚Á‚½‚çtrue
+#ShowDialogã®æˆ»ã‚Šå€¤ãŒOKã ã£ãŸã‚‰true
 if($saveFileDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){
     
-    Write-Output "Às‚µ‚Ü‚·"
-    #csvƒtƒ@ƒCƒ‹‚ğì¬A•Û‘¶
+    Write-Output "å®Ÿè¡Œã—ã¾ã™"
+    #csvãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½œæˆã€ä¿å­˜
     Get-ChildItem -Path $filePath -Filter "*.$fileExtension" -Recurse | ForEach-Object{
         New-Object psobject -Property @{
             Name = $_.Name
             Path = $_.FullName
+            LastWriteDate = $_.LastWriteTime 
+            CreateDate = $_.CreationTime
         }
         
     } | Export-Csv -NoTypeInformation -Encoding utf8 -Path $saveFileDialog.FileName
 
     
-    Write-Output "CSVƒtƒ@ƒCƒ‹‚ª•Û‘¶‚³‚ê‚Ü‚µ‚½"
+    Write-Output "CSVãƒ•ã‚¡ã‚¤ãƒ«ãŒä¿å­˜ã•ã‚Œã¾ã—ãŸ"
 }else{
-    Write-Output "•Û‘¶‚ªƒLƒƒƒ“ƒZƒ‹‚³‚ê‚Ü‚µ‚½"
+    Write-Output "ä¿å­˜ãŒã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚Œã¾ã—ãŸ"
 }
-Write-Output "ˆ—‚ğI—¹‚µ‚Ü‚·"
+Write-Output "å‡¦ç†ã‚’çµ‚äº†ã—ã¾ã™"
 Start-Sleep -Seconds 3
